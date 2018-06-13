@@ -1,9 +1,3 @@
-CS350 Operating Systems
-Fall 2016
-Assignment 2 README FILE
-
-Due Date - 10/8/16
-Submission Date - 10/8/16
 Author: Casey Kane
 Email: ckane2@binghamton.edu
 
@@ -11,106 +5,10 @@ Email: ckane2@binghamton.edu
 *                      Purpose                       *
 ******************************************************
 
-Create a shell program called cs350sh which has
+Create a shell program called shell which has
 the following functionalities:
 1) Execute any program/command
 2) Redirect input of a command from a file
 3) Redirect output of a command to a file
 4) Implement filter using pipes
 5) Combine filters, file redirection, and backgrounding
-
-******************************************************
-*                 Percent Complete                   *
-******************************************************
-
-100%
-
-******************************************************
-*                Parts not Complete                  *
-******************************************************
-
-N/A
-
-******************************************************
-*                       Bugs                         *
-******************************************************
-
-When running some pipelined foreground commands, the 
-output of the program may come after the next prompt 
-appears. This is due to not being able to figure out
-how to handle the piped commands without losing the
-prompt.
-
-******************************************************
-*                      Files                         *
-******************************************************
-
-README
-Makefile
-shell.c
-shell_programs.c
-shell_programs.h
-
-******************************************************
-*                     To Run                         *
-******************************************************
-
-make
-./cs350sh
-
-******************************************************
-*                  Sample Output                     *
-******************************************************
-cs350sh>./test < try.txt
-hello
-cs350sh>./slowproc > out.txt
-cs350sh>cat out.txt
-Starting slowproc
-helloEnding slowproc
-cs350sh>ls -l | less > out2.txt
-cs350sh>cat out2.txt
-total 156
--rwxr-x--- 1 ckane2 ckane2 24135 Oct  8 15:30 cs350sh
--rw-r----- 1 ckane2 ckane2    38 Sep 27 21:59 long_program.c
--rw-r----- 1 ckane2 ckane2   266 Sep 27 22:37 Makefile
--rw-r----- 1 ckane2 ckane2    39 Oct  8 15:09 out2.txt
--rw-r----- 1 ckane2 ckane2   234 Oct  8 15:10 out3.txt
--rw-r----- 1 ckane2 ckane2   243 Oct  8 15:11 out4.txt
--rw-r----- 1 ckane2 ckane2  1320 Oct  8 15:13 out5.txt
--rw-r----- 1 ckane2 ckane2   889 Oct  8 15:14 out6.txt
--rw-r----- 1 ckane2 ckane2    39 Oct  8 15:34 out.txt
--rw-r----- 1 ckane2 ckane2  1907 Oct  8 15:30 README
--rw-r----- 1 ckane2 ckane2  3364 Oct  8 15:23 shell.c
--rw-r----- 1 ckane2 ckane2  3286 Oct  8 15:16 shell.c~
--rw-r----- 1 ckane2 ckane2 14864 Oct  8 15:30 shell.o
--rw-r----- 1 ckane2 ckane2  4627 Oct  8 15:25 shell_programs.c
--rw-r----- 1 ckane2 ckane2  4628 Oct  8 15:23 shell_programs.c~
--rw-r----- 1 ckane2 ckane2   446 Oct  8 14:30 shell_programs.h
--rw-r----- 1 ckane2 ckane2 15568 Oct  8 15:30 shell_programs.o
--rwxr-x--- 1 ckane2 ckane2  7089 Oct  8 15:04 slowproc
--rw-r----- 1 ckane2 ckane2   159 Oct  8 15:03 slowproc.c
--rwxr-x--- 1 ckane2 ckane2  6944 Oct  8 15:33 test
--rw-r----- 1 ckane2 ckane2   131 Oct  8 15:33 test.c
--rw-r----- 1 ckane2 ckane2   127 Oct  8 15:32 test.c~
-drwxr-x--- 2 ckane2 ckane2    10 Sep 28 14:06 testDir
--rw-r----- 1 ckane2 ckane2  1568 Oct  8 15:33 test.o
--rw-r----- 1 ckane2 ckane2    12 Oct  8 13:54 try.txt
-cs350sh>./test < try.txt | less > output.txt
-cs350sh>cat output.txt
-hello
-
-*****************************************************
-*                   Bibliography                    *
-*****************************************************
-
-String Parsing code received from professor's parser.c
-SIGCHLD handler received from professor's sidchld.c
-
-*****************************************************
-*                  Miscellaneous                    *
-*****************************************************
-
-Type Ctrl+c to exit shell
-Pressing Enter on command line brings up new input prompt
-All system calls and errors handled
-No memory Leaks
