@@ -1,0 +1,180 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <fcntl.h>
+
+int currProcs[50];
+char* procStatus[51];
+
+//Redirect Stdout to Pipe
+void stdoutToPipe(int pfds[2]){
+	close(1);
+        if(dup2(pfds[1], 1) < 0){
+                fprintf(stderr, "stdout redirect failed!\n");
+		exit(1);
+	}
+	close(pfds[0]);
+}
+
+//Redirect Stdin to pipe
+void pipeToStdin(int pfds[2]){
+	close(0);
+	if(dup2(pfds[0], 0) < 0){
+		fprintf(stderr, "stdin redirect failed!\n");
+		exit(1);
+	}
+	close(pfds[1]);
+}
+
+//Redirect Stdin to file
+void fileToStdin(char* filename){
+	int fd = open(filename, O_RDONLY);
+	if(fd < 0){
+		perror("Open file for stdin redirect failed!\n");
+		exit(1);
+	}
+	if(dup2(fd, 0) == -1){
+		perror("Stdin redirect to file failed!\n");
+		exit(1);
+	}
+	close(fd);
+}
+
+//Redirect Stdout to file
+void stdoutToFile(char* filename){
+	int fd = open(filename, O_CREAT | O_WRONLY, 0666);
+	if(fd < 0){
+		perror("Open file for stdout redirect failed!\n");
+		exit(1);
+	}
+	if(dup2(fd, 1) == -1){
+		perror("Stdout redirect to file failed!\n");
+		exit(1);
+	}
+}
+
+//Add background job to listjobs
+void addJob(pid_t pid){
+        int i=0;
+        while(currProcs[i] != 0){
+                i++;
+        }
+        currProcs[i] = pid;
+        procStatus[i] = "R";
+        procStatus[i+1] = NULL;
+}
+
+//print all finished and running background jobs
+void printJobs(){
+        int i=0;
+        printf("List of background processes:\n");
+	while(currProcs[i] != 0){
+                printf("Command %d with PID %d Status:", i+1, currProcs[i]);
+                if(strcmp(procStatus[i], "R") == 0){
+                        printf("RUNNING\n");
+                }
+                else{
+                        printf("FINISHED\n");
+                }
+                i++;
+        }
+}
+
+//find out if there is a job with a given pid running in the background
+int findJob(int pid){
+        int i=0;
+        while(currProcs[i] != 0){
+                if(currProcs[i] == pid){
+                        return pid;
+                }
+                i++;
+        }
+        return 0;
+}
+
+//Change status of background job from running to complete
+void completeJob(int pid){
+        int i=0;
+        while(currProcs[i] != 0){
+                if(currProcs[i] == pid){
+                        procStatus[i] = "F";
+                }
+                i++;
+        }
+}
+
+//Bring background process to the foreground
+void foreground(pid_t pid, int status, char* cmd_pieces[]){
+	char* ptr;
+	pid_t validId;
+	long test = 0;
+	if(cmd_pieces[1] != NULL){
+		//strtol converts string to number which we use to find the process to bring to foreground
+	        test = strtol(cmd_pieces[1], &ptr, 10);
+	}
+	if(test == 0){
+		fprintf(stderr, "INVALID CMD: no process id given\n");
+	}
+	else{
+		validId = findJob(test);
+		if(validId == 0){
+			fprintf(stderr, "ERROR: No process with given ID currently running\n");
+		}
+		else{
+			waitpid(validId, &status, 0);
+			completeJob(pid);
+		}
+	}
+}
+
+//Handle all scenarios of commands given by user
+void functCall(char* args[], int length){
+        if(strcmp(args[0], "\n") == 0){
+                exit(0);
+        }
+        else if(length == 1){
+                if(execlp(args[0], args[0], (char*) NULL) == -1){
+                        fprintf(stderr, "No arg cmd exec call failed!\n");
+                }
+                exit(2);
+        }
+        else if(length == 2 && strcmp(args[1], "&") == 0){
+                if(execlp(args[0], args[0], (char*) NULL) == -1){
+                        fprintf(stderr, "Background exec call failed!\n");
+                }
+                exit(2);
+        }
+	else if(length == 2){
+		if(execlp(args[0], args[0], args[1], (char*) NULL) == -1){
+			fprintf(stderr, "Single arg exec call failed!");
+		}
+	}
+        else{
+                if(execvp(args[0], args) == -1){
+                        fprintf(stderr, "Multi arg cmd exec call failed\n");
+                }
+                exit(2);
+        }
+}
+
+//Handle different specialized commands
+void handleCmd(pid_t pid, int status, char* cmd_pieces[50], char* curr_cmd[50], int curr_length){
+        if(strcmp(curr_cmd[0], "fg") == 0){
+                foreground(pid, status, cmd_pieces);
+        }
+        else if(strcmp(curr_cmd[0], "listjobs") == 0){
+                printJobs();
+        }
+        else if(curr_length > 1 && strcmp(curr_cmd[1], "<") == 0){
+                functCall(curr_cmd, 1);
+        }
+        else if(curr_length > 1 && strcmp(curr_cmd[1], ">") == 0){
+                stdoutToFile(curr_cmd[2]);
+		functCall(curr_cmd, 1);
+        }
+        else{
+                functCall(curr_cmd, curr_length);
+        }
+}

@@ -1,0 +1,17 @@
+total 68
+-rw-r----- 1 ckane2 ckane2   38 Sep 27 21:59 long_program.c
+-rw-r----- 1 ckane2 ckane2  266 Sep 27 22:37 Makefile
+-rw-r----- 1 ckane2 ckane2   39 Oct  8 15:09 out2.txt
+-rw-r----- 1 ckane2 ckane2  234 Oct  8 15:10 out3.txt
+-rw-r----- 1 ckane2 ckane2  243 Oct  8 15:11 out4.txt
+-rw-r----- 1 ckane2 ckane2 1320 Oct  8 15:13 out5.txt
+-rw-r----- 1 ckane2 ckane2    0 Oct  8 15:14 out6.txt
+-rw-r----- 1 ckane2 ckane2   39 Oct  8 15:06 out.txt
+-rw-r----- 1 ckane2 ckane2 3379 Oct  8 14:47 shell.c
+-rw-r----- 1 ckane2 ckane2 4262 Oct  8 15:06 shell_programs.c
+-rw-r----- 1 ckane2 ckane2  446 Oct  8 14:30 shell_programs.h
+-rwxr-x--- 1 ckane2 ckane2 7089 Oct  8 15:04 slowproc
+-rw-r----- 1 ckane2 ckane2  159 Oct  8 15:03 slowproc.c
+-rwxr-x--- 1 ckane2 ckane2 6759 Sep 27 22:00 test
+drwxr-x--- 2 ckane2 ckane2   10 Sep 28 14:06 testDir
+-rw-r----- 1 ckane2 ckane2   12 Oct  8 13:54 try.txt
